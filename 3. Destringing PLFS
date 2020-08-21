@@ -1,0 +1,66 @@
+
+*** code for destringing Stata Files ***
+clear all
+set more off, permanently
+
+**Common path
+
+cd "F:/My Drive/PLFS/PLFS/Stata Files"
+
+
+use "PLFS_long2.dta", clear
+
+
+
+//multiplier
+destring(ssmultiplier), gen(ssmult)
+drop ssmultiplier
+
+replace ssmult = ssmult/100
+gen hmult = ssmult
+replace hmult = hmult/2 if nscount1 != nscount2
+
+
+//indicator for unique households
+bysort hhid: gen hh = _n
+replace hh = . if hh > 1
+
+
+
+//variable for quarter
+encode(quart), gen(q)
+drop quart
+
+
+//Person level multipliers
+destring(hhsize), gen(hsize)
+drop hhsize
+gen pmult = hmult * hsize
+
+
+//unique codes
+gen district_code = region + district
+drop district
+rename district_code district
+
+gen hhtype_code = sector + hhtype
+drop hhtype
+rename hhtype_code hhtype
+
+
+
+
+//Destringing
+
+ds _all, has(type string)
+local allstring `r(varlist)'
+local except id
+local string : list allstring - except
+
+foreach var of varlist `string' {
+destring(`var'), gen(temp)
+drop `var'
+rename temp `var'
+}
+
+save "PLFS_long3.dta", replace
