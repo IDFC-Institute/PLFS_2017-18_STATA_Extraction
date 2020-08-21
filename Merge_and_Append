@@ -1,0 +1,75 @@
+
+*** code for appending and merging Stata Files ***
+clear all
+set more off, permanently
+
+cd "F:/My Drive/PLFS/PLFS/Stata Files"
+
+
+//Merging Household First and Revisit Data
+
+use "HH_level_FV.dta", clear
+
+append using "HH_level_RV.dta"
+
+
+//Quarter, FSU, Sub-block, Second stage stratum, Household number
+
+
+encode(visit), gen(v)
+
+tab visit v
+
+drop visit
+
+gen hhid = fsu + subblock + sssno + hhno
+
+gen hhid_v =  fsu + subblock + sssno + hhno + string(v)
+
+distinct hhid*
+
+save "HH_level_comb.dta", replace
+
+
+
+
+//Merging Person First and Revisit Data
+
+clear all
+
+use "P_level_FV.dta", clear
+
+append using "P_level_RV.dta"
+
+encode(visit), gen(v)
+
+tab visit v
+
+drop visit 
+
+gen hhid = fsu + subblock + sssno + hhno
+
+gen hhid_p = hhid + pno
+
+gen hhid_v =  fsu + subblock + sssno + hhno + string(v)
+
+gen hhid_vp = fsu + subblock + sssno + hhno + string(v) + pno
+
+
+
+distinct hhid* 
+
+save "P_level_comb.dta", replace
+
+
+
+//Merging Household and Person data
+
+clear all
+
+use "HH_level_comb.dta", clear
+
+merge 1:m hhid_v using  "P_level_comb.dta"
+
+
+save "PLFS_long2.dta", replace
