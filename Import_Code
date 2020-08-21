@@ -3,7 +3,7 @@
 clear all
 set more off, permanently
 
-cd "DRIVENAME/PLFS/PLFS"
+cd "My Drive/PLFS/PLFS"
 
 **Import and Save
 
