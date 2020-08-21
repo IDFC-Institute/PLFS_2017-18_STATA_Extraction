@@ -1,0 +1,29 @@
+*** code for importing PLFS Txt files and converting to Stata Files ***
+
+clear all
+set more off, permanently
+
+cd "DRIVENAME/PLFS/PLFS"
+
+**Import and Save
+
+clear
+infile using "Dictionary Files/HH_Level.dct", using("Txt Files/FHH_FV.TXT")
+
+save "Stata files/HH_level_FV.dta", replace
+
+
+clear
+infile using "Dictionary Files/HH_Level.dct", using("Txt Files/FHH_RV.TXT")
+save "Stata files/HH_level_RV.dta", replace
+
+
+clear
+infile using "Dictionary Files/P_Level_FV.dct", using("Txt Files/FPER_FV.TXT")
+save "Stata files/P_level_FV.dta", replace
+
+
+clear
+infile using "Dictionary Files/P_Level_RV.dct", using("Txt Files/FPER_RV.TXT")
+save "Stata files/P_level_RV.dta", replace
+
